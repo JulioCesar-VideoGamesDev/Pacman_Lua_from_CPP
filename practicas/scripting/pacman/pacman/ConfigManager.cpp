@@ -1,7 +1,6 @@
 #include "ConfigManager.h"
 
 #include <iostream>
-#include <lua.hpp>
 
 ConfigManager::ConfigManager() {
     setDefaultValues();
@@ -20,7 +19,13 @@ void ConfigManager::setDefaultValues() {
 
 bool ConfigManager::loadConfig(const std::string& filename) {
     // Create the LuaState
-    lua_State* L = luaL_newstate();
+
+    if (L) {
+        lua_close(L);
+        L = nullptr;
+    }
+
+    L = luaL_newstate();
     if (!L) {
         std::cerr << "Could not create the LuaState" << std::endl;
         return false;
@@ -34,6 +39,7 @@ bool ConfigManager::loadConfig(const std::string& filename) {
         std::cerr << "Error to load the file" << filename << ": " << lua_tostring(L, -1) << std::endl;
         lua_pop(L, 1);
         lua_close(L);
+        L = nullptr;
         return false;
     }
 
@@ -42,6 +48,7 @@ bool ConfigManager::loadConfig(const std::string& filename) {
         std::cerr << "Error to execute file" << filename << ": " << lua_tostring(L, -1) << std::endl;
         lua_pop(L, 1);
         lua_close(L);
+        L = nullptr;
         return false;
     }
 
@@ -132,6 +139,79 @@ bool ConfigManager::loadConfig(const std::string& filename) {
     }
     lua_pop(L, 1);
 
-    lua_close(L);
     return true;
+}
+
+ConfigManager::Color ConfigManager::getPowerUpColorFromLua(float health) {
+    Color defaultColor = { 0, 255, 0 }; // Green by default
+
+    if (!L) {
+        std::cerr << "Error: Lua state not initialized" << std::endl;
+        return defaultColor;
+    }
+
+    // Get the function
+    lua_getglobal(L, "getPowerUpColor");
+
+    // Verify the function
+    if (!lua_isfunction(L, -1)) {
+        std::cerr << "Error: getPowerUpColor is not a Lua function" << std::endl;
+        lua_pop(L, 1);
+        return defaultColor;
+    }
+
+    // Send the parameter
+    lua_pushnumber(L, health);
+
+    // Call the function
+    if (lua_pcall(L, 1, 1, 0) != 0) {
+        std::cerr << "Error while calling getPowerUpColor: " << lua_tostring(L, -1) << std::endl;
+        lua_pop(L, 1);
+        return defaultColor;
+    }
+
+    // Verify that the result is a table
+    if (!lua_istable(L, -1)) {
+        std::cerr << "Error: getPowerUpColor didn't return a table" << std::endl;
+        lua_pop(L, 1);
+        return defaultColor;
+    }
+
+    // Read the values
+    Color result = { 0, 0, 0 };
+
+    // Read r
+    lua_getfield(L, -1, "r");
+    if (lua_isnumber(L, -1)) {
+        result.r = lua_tointeger(L, -1);
+    }
+    else {
+        std::cerr << "Color without range 'r', using 0" << std::endl;
+    }
+    lua_pop(L, 1);
+
+    // Read g
+    lua_getfield(L, -1, "g");
+    if (lua_isnumber(L, -1)) {
+        result.g = lua_tointeger(L, -1);
+    }
+    else {
+        std::cerr << "Color without range 'g', using 0" << std::endl;
+    }
+    lua_pop(L, 1);
+
+    // Read b
+    lua_getfield(L, -1, "b");
+    if (lua_isnumber(L, -1)) {
+        result.b = lua_tointeger(L, -1);
+    }
+    else {
+        std::cerr << "Color without range 'b', using 0" << std::endl;
+    }
+    lua_pop(L, 1);
+
+    // Clean the table from the stack
+    lua_pop(L, 1);
+
+    return result;
 }

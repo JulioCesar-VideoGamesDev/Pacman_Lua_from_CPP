@@ -1,4 +1,5 @@
 #include <pacman_include.hpp>
+
 #include "ConfigManager.h"
 
 ConfigManager g_config;
@@ -38,10 +39,11 @@ bool ghostEatenCallback(int& score)
 
 bool powerUpEatenCallback(int& score)
 { // Pacman se ha comido un powerUp
-	setPacmanSpeedMultiplier(g_config.getPowerUpSpeedMultiplier());
-
-	auto color = g_config.getPacmanPowerUpColor();
+	// Get the color based on the life.
+	ConfigManager::Color color = g_config.getPowerUpColorFromLua(vida);
 	setPacmanColor(color.r, color.g, color.b);
+
+	setPacmanSpeedMultiplier(g_config.getPowerUpSpeedMultiplier());
 
 	setPowerUpTime(g_config.getPowerUpDuration());
 

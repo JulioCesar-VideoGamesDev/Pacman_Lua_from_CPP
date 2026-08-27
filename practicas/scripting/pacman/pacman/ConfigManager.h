@@ -5,17 +5,19 @@
 
 #include <string>
 
+#include "lua.hpp"
+
 class ConfigManager {
 private:
 
     int powerUpScore;
     float powerUpDuration;
     float powerUpSpeedMultiplier;
-    struct Color {
-        int r, g, b;
-    } pacmanPowerUpColor;
+    
     int bronzeMedalPoints;
     int coinPoints;
+
+    lua_State* L;
 
 public:
     ConfigManager();
@@ -27,11 +29,17 @@ public:
     int getPowerUpScore() const { return powerUpScore; }
     float getPowerUpDuration() const { return powerUpDuration; }
     float getPowerUpSpeedMultiplier() const { return powerUpSpeedMultiplier; }
-    Color getPacmanPowerUpColor() const { return pacmanPowerUpColor; }
     int getBronzeMedalPoints() const { return bronzeMedalPoints; }
     int getCoinPoints() const { return coinPoints; }
 
     void setDefaultValues();
+
+    struct Color {
+        int r, g, b;
+    } pacmanPowerUpColor;
+
+    Color getPacmanPowerUpColor() const { return pacmanPowerUpColor; }
+    Color getPowerUpColorFromLua(float health);
 };
 
 #endif

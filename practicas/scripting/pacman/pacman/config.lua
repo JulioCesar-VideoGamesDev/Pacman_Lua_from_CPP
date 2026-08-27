@@ -1,20 +1,35 @@
 -- config.lua
--- Configuración del juego Pacman
+-- Configuration file for the Pacman game
 
--- Puntuación que se gana cuando se come un powerUp
+-- Gained score when eating a powerUp
 powerUpScore = 5000
 
--- Tiempo que dura el powerUp (en segundos)
+-- Timme that lasts the powerUp (in seconds)
 powerUpDuration = 5.0
 
--- Multiplicador de velocidad al comer un powerUp
+-- Speed multiplier when eating a powerUp
 powerUpSpeedMultiplier = 2.0
 
--- Color de pacman cuando ha comido un powerUp (RGB)
-pacmanPowerUpColor = {r = 0, g = 255, b = 255}
-
--- Número de puntos necesarios para conseguir una medalla de bronce
+-- Number of points needed to gain a bronce medal
 bronzeMedalPoints = 500
 
--- Número de puntos obtenidos por cada moneda comida
+-- Number of points gained for each coin eaten
 coinPoints = 50
+
+-- Color logic based on the health
+function getPowerUpColor(health)
+    
+    if health >= 1.5 then
+        -- RED
+        return {r = 255, g = 0, b = 0}
+    elseif health >= 1.0 then
+        -- ORANGE
+        return {r = 255, g = 165, b = 0}
+    elseif health >= 0.5 then
+        -- GREEN
+        return {r = 0, g = 255, b = 0}
+    else
+        -- AZUL
+        return {r = 0, g = 0, b = 255}
+    end
+end
