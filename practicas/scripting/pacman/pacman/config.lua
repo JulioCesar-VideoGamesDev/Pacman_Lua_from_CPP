@@ -29,7 +29,7 @@ function getPowerUpColor(health)
         -- GREEN
         return {r = 0, g = 255, b = 0}
     else
-        -- AZUL
+        -- BLUE
         return {r = 0, g = 0, b = 255}
     end
 end

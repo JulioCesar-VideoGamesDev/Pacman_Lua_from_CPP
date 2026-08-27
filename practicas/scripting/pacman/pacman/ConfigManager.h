@@ -20,25 +20,44 @@ private:
     lua_State* L;
 
 public:
-    ConfigManager();
-    ~ConfigManager();
-
-    bool loadConfig(const std::string& filename);
-
-    // Getters para acceder a los valores
-    int getPowerUpScore() const { return powerUpScore; }
-    float getPowerUpDuration() const { return powerUpDuration; }
-    float getPowerUpSpeedMultiplier() const { return powerUpSpeedMultiplier; }
-    int getBronzeMedalPoints() const { return bronzeMedalPoints; }
-    int getCoinPoints() const { return coinPoints; }
-
-    void setDefaultValues();
 
     struct Color {
         int r, g, b;
     } pacmanPowerUpColor;
 
-    Color getPacmanPowerUpColor() const { return pacmanPowerUpColor; }
+private:
+
+    // For the hot-reload
+    std::string configFilename;
+    time_t lastFileModTime;
+    bool needsReload;
+
+    time_t getFileModTime(const std::string& filename);
+    bool checkIfFileChanged();
+    bool loadConfigInternal(const std::string& filename);
+
+public:
+    
+    ConfigManager();
+    ~ConfigManager();
+
+    bool loadConfig(const std::string& filename);
+
+    // Reload file if it has changed.
+    bool reloadIfNeeded();
+
+    // Getters para acceder a los valores
+    int getPowerUpScore();
+    float getPowerUpDuration();
+    float getPowerUpSpeedMultiplier();
+    Color getPacmanPowerUpColor();
+    int getBronzeMedalPoints();
+    int getCoinPoints();
+
+    void setDefaultValues();
+
+    
+
     Color getPowerUpColorFromLua(float health);
 };
 
