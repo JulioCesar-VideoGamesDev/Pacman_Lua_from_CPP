@@ -1,9 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\diego.garces\\Downloads\\08_Lua_desde_C\u002B\u002B_vs2022\\practicas\\scripting\\pacman\\pacman\\",
+  "WorkspaceRootPath": "C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{20FE3614-FE57-437D-BA80-0FADB8D3B425}|pacman.vcxproj|C:\\Users\\diego.garces\\Downloads\\08_Lua_desde_C\u002B\u002B_vs2022\\practicas\\scripting\\pacman\\pacman\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{20FE3614-FE57-437D-BA80-0FADB8D3B425}|pacman.vcxproj|C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\ConfigManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{20FE3614-FE57-437D-BA80-0FADB8D3B425}|pacman.vcxproj|solutionrelative:ConfigManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20FE3614-FE57-437D-BA80-0FADB8D3B425}|pacman.vcxproj|C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\ConfigManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{20FE3614-FE57-437D-BA80-0FADB8D3B425}|pacman.vcxproj|solutionrelative:ConfigManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20FE3614-FE57-437D-BA80-0FADB8D3B425}|pacman.vcxproj|C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{20FE3614-FE57-437D-BA80-0FADB8D3B425}|pacman.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -14,25 +22,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "ConfigManager.h",
+              "DocumentMoniker": "C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\ConfigManager.h",
+              "RelativeDocumentMoniker": "ConfigManager.h",
+              "ToolTip": "C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\ConfigManager.h",
+              "RelativeToolTip": "ConfigManager.h",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-08-27T01:52:20.702Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ConfigManager.cpp",
+              "DocumentMoniker": "C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\ConfigManager.cpp",
+              "RelativeDocumentMoniker": "ConfigManager.cpp",
+              "ToolTip": "C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\ConfigManager.cpp",
+              "RelativeToolTip": "ConfigManager.cpp",
+              "ViewState": "AgIAAE4AAAAAAAAAAAAkwF8AAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-08-27T01:45:22.916Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Users\\diego.garces\\Downloads\\08_Lua_desde_C\u002B\u002B_vs2022\\practicas\\scripting\\pacman\\pacman\\main.cpp",
+              "DocumentMoniker": "C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
-              "ToolTip": "C:\\Users\\diego.garces\\Downloads\\08_Lua_desde_C\u002B\u002B_vs2022\\practicas\\scripting\\pacman\\pacman\\main.cpp",
+              "ToolTip": "C:\\Users\\Uuario\\Documents\\GitHub\\08_Lua_from_CPP\\practicas\\scripting\\pacman\\pacman\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AgIAAE8AAAAAAAAAAAAAAGEAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAiwC8AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-05-28T18:20:53.403Z",
               "EditorCaption": ""

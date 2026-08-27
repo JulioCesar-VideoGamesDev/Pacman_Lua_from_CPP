@@ -1,4 +1,7 @@
 #include <pacman_include.hpp>
+#include "ConfigManager.h"
+
+ConfigManager g_config;
 
 int num_coins = 0;
 const int platas_para_oro = 5;
@@ -18,7 +21,7 @@ bool pacmanEatenCallback(int& score, bool& muerto)
 bool coinEatenCallback(int& score)
 { // Pacman se ha comido una moneda
 	++num_coins;
-	score = num_coins * 50;
+	score = num_coins * g_config.getCoinPoints();
 
 	return true;
 }
@@ -35,11 +38,14 @@ bool ghostEatenCallback(int& score)
 
 bool powerUpEatenCallback(int& score)
 { // Pacman se ha comido un powerUp
-	setPacmanSpeedMultiplier(2.0f);
-	setPacmanColor(0, 255, 0);
-	setPowerUpTime(5);
+	setPacmanSpeedMultiplier(g_config.getPowerUpSpeedMultiplier());
 
-	score += 5000;
+	auto color = g_config.getPacmanPowerUpColor();
+	setPacmanColor(color.r, color.g, color.b);
+
+	setPowerUpTime(g_config.getPowerUpDuration());
+
+	score += g_config.getPowerUpScore();
 
 	return true;
 }
@@ -62,11 +68,13 @@ bool pacmanRestarted(int& score)
 
 bool computeMedals(int& oro, int& plata, int& bronce, int score)
 {
-	plata = score / bronces_para_plata;
-	bronce = score % bronces_para_plata;
-	
-	oro = plata / platas_para_oro;
-	plata = plata % platas_para_oro;
+	int bronce_medal_points = g_config.getBronzeMedalPoints();
+
+	plata = score / bronce_medal_points;
+	bronce = score % bronce_medal_points;
+
+	oro = plata / bronce_medal_points;
+	plata = plata % bronce_medal_points;
 
 	return true;
 }
@@ -79,20 +87,24 @@ bool getLives(float& vidas)
 
 bool setImmuneCallback()
 {
-    return true;
+	return true;
 }
 
 bool removeImmuneCallback()
 {
-    return true;
+	return true;
 }
 
 bool InitGame()
 {
-    return true;
+	if (!g_config.loadConfig("config.lua")) {
+		std::cout << "Error cargando config.lua, usando valores por defecto" << std::endl;
+	}
+
+	return true;
 }
 
 bool EndGame()
 {
-    return true;
+	return true;
 }
