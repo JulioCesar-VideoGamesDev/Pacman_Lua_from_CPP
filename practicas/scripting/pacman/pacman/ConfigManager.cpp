@@ -110,7 +110,7 @@ bool ConfigManager::loadConfigInternal(const std::string& filename)
     lua_getglobal(L, "powerUpDuration");
     if (lua_isnumber(L, -1))
     {
-        powerUpDuration = lua_tonumber(L, -1);
+        powerUpDuration = (float)lua_tonumber(L, -1);
         std::cout << "powerUpDuration loaded: " << powerUpDuration << std::endl;
     }
     else
@@ -123,7 +123,7 @@ bool ConfigManager::loadConfigInternal(const std::string& filename)
     lua_getglobal(L, "powerUpSpeedMultiplier");
     if (lua_isnumber(L, -1))
     {
-        powerUpSpeedMultiplier = lua_tonumber(L, -1);
+        powerUpSpeedMultiplier = (float)lua_tonumber(L, -1);
         std::cout << "powerUpSpeedMultiplier loaded: " << powerUpSpeedMultiplier << std::endl;
     }
     else

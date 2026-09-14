@@ -1,59 +1,130 @@
 #include <pacman_include.hpp>
 
-#include "ConfigManager.h"
+#include "LuaManager.h"
 
-ConfigManager g_config;
+//LuaManager g_lua;
 
-int num_coins = 0;
+#include "lua.hpp"
+#include "Pacman.h"
+
+
+// Constantes que siguen viviendo en C++ (puntuación, medallas)
 const int platas_para_oro = 5;
 const int bronces_para_plata = 100;
 
-const float max_vida = 1.5f;
-float vida = max_vida;
+// ---------- Helpers para acceder a la instancia Pacman de Lua ----------
+static Pacman* getPacman() {
+	lua_State* L = LuaManager::instance().getLuaState();
+	if (!L) return nullptr;
+	lua_getglobal(L, "pacman");
+	Pacman* p = (Pacman*)luaL_checkudata(L, -1, "Pacman");
+	lua_pop(L, 1);
+	return p;
+}
+
+// CALLBACKS -------------------------------------------------------------------------
 
 bool pacmanEatenCallback(int& score, bool& muerto)
-{ // Pacman ha sido comido por un fantasma
-	vida -= 0.5f;
-	muerto = vida < 0.0f;
+{
+	Pacman* p = getPacman();
+	if (!p) { muerto = true; return false; }
 
+	p->loseLife(0.5f);
+	muerto = p->getLives() <= 0.0f;
 	return true;
 }
 
 bool coinEatenCallback(int& score)
-{ // Pacman se ha comido una moneda
-	++num_coins;
-	score = num_coins * g_config.getCoinPoints();
+{
+	Pacman* p = getPacman();
+	if (!p) return false;
 
+	p->addCoin();
+
+	// Leemos coinPoints desde Lua directamente para no depender de ConfigManager
+	lua_State* L = LuaManager::instance().getLuaState();
+	lua_getglobal(L, "coinPoints");
+	int coinPoints = (int)lua_tointeger(L, -1);
+	lua_pop(L, 1);
+
+	score = p->getCoins() * coinPoints;
 	return true;
 }
 
+static bool configLoaded = false;
+
 bool frameCallback(float time)
-{ // Se llama periodicamente cada frame
+{
+	if (!configLoaded) {
+		if (!LuaManager::instance().init()) {
+			std::cout << "Error inicializando Lua" << std::endl;
+
+			return false;
+		}
+
+		if (!LuaManager::instance().loadConfig("config.lua")) {
+			std::cout << "Error cargando config.lua" << std::endl;
+		}
+		configLoaded = true;
+		// Después de cargar, aplicamos también lo que queramos del script
+	}
+	else
+	{
+		LuaManager::instance().reloadIfNeeded();
+	}
+
 	return false;
 }
 
 bool ghostEatenCallback(int& score)
-{ // Pacman se ha comido un fantasma
+{
 	return false;
 }
 
 bool powerUpEatenCallback(int& score)
-{ // Pacman se ha comido un powerUp
-	// Get the color based on the life.
-	ConfigManager::Color color = g_config.getPowerUpColorFromLua(vida);
-	setPacmanColor(color.r, color.g, color.b);
+{
+	Pacman* p = getPacman();
+	if (!p) return false;
 
-	setPacmanSpeedMultiplier(g_config.getPowerUpSpeedMultiplier());
+	lua_State* L = LuaManager::instance().getLuaState();
+	if (!L) return false;
 
-	setPowerUpTime(g_config.getPowerUpDuration());
+	// Color según la vida (función Lua)
+	lua_getglobal(L, "getPowerUpColor");
+	lua_pushnumber(L, p->getLives());
+	if (lua_pcall(L, 1, 1, 0) == 0 && lua_istable(L, -1)) {
+		lua_getfield(L, -1, "r"); int r = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+		lua_getfield(L, -1, "g"); int g = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+		lua_getfield(L, -1, "b"); int b = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+		setPacmanColor((unsigned char)r, (unsigned char)g, (unsigned char)b, 255);
+	}
+	else {
+		std::cerr << "getPowerUpColor failed" << std::endl;
+	}
+	lua_pop(L, 1);
 
-	score += g_config.getPowerUpScore();
+	// Multiplicador y duración del powerUp
+	lua_getglobal(L, "powerUpSpeedMultiplier");
+	float mult = (float)lua_tonumber(L, -1);
+	lua_pop(L, 1);
+	setPacmanSpeedMultiplier(mult);
+
+	lua_getglobal(L, "powerUpDuration");
+	int dur = (int)lua_tonumber(L, -1);
+	lua_pop(L, 1);
+	setPowerUpTime(dur);
+
+	// Puntos
+	lua_getglobal(L, "powerUpScore");
+	int powerScore = (int)lua_tointeger(L, -1);
+	lua_pop(L, 1);
+	score += powerScore;
 
 	return true;
 }
 
 bool powerUpGone()
-{ // El powerUp se ha acabado
+{
 	setPacmanColor(255, 0, 0);
 	setPacmanSpeedMultiplier(1.0f);
 	return true;
@@ -61,29 +132,35 @@ bool powerUpGone()
 
 bool pacmanRestarted(int& score)
 {
+	Pacman* p = getPacman();
+	if (p) p->reset();
 	score = 0;
-	num_coins = 0;
-	vida = max_vida;
-
 	return true;
 }
 
 bool computeMedals(int& oro, int& plata, int& bronce, int score)
 {
-	int bronce_medal_points = g_config.getBronzeMedalPoints();
+	lua_State* L = LuaManager::instance().getLuaState();
+	if (!L) return false;
+
+	lua_getglobal(L, "bronzeMedalPoints");
+	int bronce_medal_points = (int)lua_tointeger(L, -1);
+	lua_pop(L, 1);
+
+	if (bronce_medal_points <= 0) bronce_medal_points = 500;
 
 	plata = score / bronce_medal_points;
 	bronce = score % bronce_medal_points;
-
 	oro = plata / bronce_medal_points;
 	plata = plata % bronce_medal_points;
-
 	return true;
 }
 
 bool getLives(float& vidas)
 {
-	vidas = vida;
+	Pacman* p = getPacman();
+	if (!p) { vidas = 0.0f; return false; }
+	vidas = p->getLives();
 	return true;
 }
 
@@ -99,10 +176,6 @@ bool removeImmuneCallback()
 
 bool InitGame()
 {
-	if (!g_config.loadConfig("config.lua")) {
-		std::cout << "Error cargando config.lua, usando valores por defecto" << std::endl;
-	}
-
 	return true;
 }
 
