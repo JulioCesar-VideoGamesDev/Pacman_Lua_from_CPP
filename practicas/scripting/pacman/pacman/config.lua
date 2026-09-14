@@ -11,13 +11,13 @@ coinPoints              = 50
 
 function getPowerUpColor(health)
     if health >= 1.5 then
-        return {r = 255, g = 0,   b = 0}    -- rojo
+        return {r = 255, g = 0,   b = 0}
     elseif health >= 1.0 then
-        return {r = 255, g = 165, b = 0}    -- naranja
+        return {r = 255, g = 165, b = 0}
     elseif health >= 0.5 then
-        return {r = 0,   g = 255, b = 0}    -- verde
+        return {r = 0,   g = 255, b = 0}
     else
-        return {r = 0,   g = 0,   b = 255}  -- azul
+        return {r = 0,   g = 0,   b = 255}
     end
 end
 
@@ -33,6 +33,6 @@ setPowerUpTime(5)
 -- class Pacman
 pacman = Pacman()
 pacman:setSpeedMultiplier(1.0)
-pacman:setColor(255, 255, 0)
-pacman:setPowerUpTime(5)
-pacman:setMaxLives(1.5)
+pacman:setColor(255, 255, 255)
+pacman:setPowerUpTime(10)
+pacman:setMaxLives(10)

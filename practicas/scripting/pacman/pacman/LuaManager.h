@@ -10,27 +10,26 @@
 class LuaManager {
 public:
     static LuaManager& instance() {
-        static LuaManager inst;   // se construye la primera vez que se llama
+        static LuaManager inst;
         return inst;
     }
 
 private:
-    LuaManager();   // privado para forzar uso de instance()
+    LuaManager();
     ~LuaManager();
     LuaManager(const LuaManager&) = delete;
     LuaManager& operator=(const LuaManager&) = delete;
 
 public:
-    // Crea el lua_State y registra bindings. NO ejecuta ningún script.
+    // Creates the lua_State and register the bindings.
     bool init();
 
-    // Carga config.lua y registra los bindings (funciones + clase Pacman).
+    // Loads config.lua
     bool loadConfig(const std::string& filename);
 
-    // Recarga si el fichero ha cambiado. Devuelve true si se recargó.
+    // If config.lua changed then loads it again.
     bool reloadIfNeeded();
 
-    // Acceso al estado de Lua (para que main.cpp pueda leer globales como "pacman")
     lua_State* getLuaState() const { return L; }
 
 private:

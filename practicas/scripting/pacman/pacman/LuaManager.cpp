@@ -3,12 +3,12 @@
 #include <iostream>
 #include <sys/stat.h>
 
-// Aquí están las declaraciones de los bindings
 #include "lua_bindings.h"
 
 LuaManager::LuaManager() : L(nullptr), lastFileModTime(0) {}
 
-LuaManager::~LuaManager() {
+LuaManager::~LuaManager()
+{
     if (L) {
         lua_close(L);
         L = nullptr;
@@ -17,7 +17,7 @@ LuaManager::~LuaManager() {
 
 bool LuaManager::init()
 {
-    if (L) return true;   // ya inicializado
+    if (L) return true;
 
     L = luaL_newstate();
     if (!L) {
@@ -29,7 +29,8 @@ bool LuaManager::init()
     return true;
 }
 
-time_t LuaManager::getFileModTime(const std::string& filename) {
+time_t LuaManager::getFileModTime(const std::string& filename)
+{
     struct stat fileInfo;
     if (stat(filename.c_str(), &fileInfo) == 0) {
         return fileInfo.st_mtime;
@@ -37,7 +38,8 @@ time_t LuaManager::getFileModTime(const std::string& filename) {
     return 0;
 }
 
-bool LuaManager::checkIfFileChanged() {
+bool LuaManager::checkIfFileChanged()
+{
     if (configFilename.empty()) return false;
     time_t currentModTime = getFileModTime(configFilename);
     if (currentModTime != lastFileModTime) {
@@ -48,15 +50,14 @@ bool LuaManager::checkIfFileChanged() {
     return false;
 }
 
-bool LuaManager::loadConfigInternal(const std::string& filename) {
-    // En lugar de crear el L aquí, asegúrate de que existe
+bool LuaManager::loadConfigInternal(const std::string& filename)
+{
     if (!L) {
         if (!init()) return false;
     }
-    else {
-        // Ya existe: limpiamos las globals y bindings para recargar limpio.
-        // La forma más simple es cerrar y volver a crear. Pero eso
-        // re-registraría los bindings, que es justo lo que queremos.
+    else
+    {
+        // If we already have a lua_State then we close it and create a new one.
         lua_close(L);
         L = nullptr;
         if (!init()) return false;
@@ -79,14 +80,16 @@ bool LuaManager::loadConfigInternal(const std::string& filename) {
     return true;
 }
 
-bool LuaManager::loadConfig(const std::string& filename) {
+bool LuaManager::loadConfig(const std::string& filename)
+{
     configFilename = filename;
     lastFileModTime = getFileModTime(filename);
     std::cout << "Loading configuration from: " << filename << std::endl;
     return loadConfigInternal(filename);
 }
 
-bool LuaManager::reloadIfNeeded() {
+bool LuaManager::reloadIfNeeded()
+{
     if (!checkIfFileChanged()) return false;
     std::cout << "Reloading configuration..." << std::endl;
     return loadConfigInternal(configFilename);

@@ -3,7 +3,7 @@
 
 #include <new>
 
-// ---------------- Constructor / __gc ----------------
+// Constructor / _gc ----------------
 
 static int pacman_new(lua_State* L) {
     void* ud = lua_newuserdata(L, sizeof(Pacman));
@@ -19,7 +19,7 @@ static int pacman_gc(lua_State* L) {
     return 0;
 }
 
-// ---------------- Métodos ----------------
+// Methods ----------------
 
 static int pacman_setSpeedMultiplier(lua_State* L) {
     Pacman* p = (Pacman*)luaL_checkudata(L, 1, "Pacman");
@@ -70,7 +70,7 @@ static int pacman_reset(lua_State* L) {
     return 0;
 }
 
-// ---------------- Tabla de métodos (Lua 5.1: manual) ----------------
+// Methods table for Lua ----------------
 
 static const luaL_Reg pacman_methods[] = {
     { "setSpeedMultiplier", pacman_setSpeedMultiplier },
@@ -85,14 +85,13 @@ static const luaL_Reg pacman_methods[] = {
 };
 
 void registerPacmanClass(lua_State* L) {
-    // 1) Crear la metatabla "Pacman"
+    // Creates the metatable
     luaL_newmetatable(L, "Pacman");
-
-    // 2) __index = la propia metatabla, así p:setColor(...) encuentra el método
+    
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
 
-    // 3) Registrar los métodos manualmente (luaL_setfuncs no existe en 5.1)
+    // Register all the methods
     for (const luaL_Reg* r = pacman_methods; r->name; ++r) {
         lua_pushcfunction(L, r->func);
         lua_setfield(L, -2, r->name);
@@ -100,6 +99,6 @@ void registerPacmanClass(lua_State* L) {
 
     lua_pop(L, 1);
 
-    // 4) Constructor global "Pacman" -> pacman_new
+    // Global constructor
     lua_register(L, "Pacman", pacman_new);
 }

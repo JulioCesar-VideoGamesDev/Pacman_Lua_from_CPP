@@ -1,6 +1,5 @@
 #include "Pacman.h"
 
-// La API del motor
 #include "engine_api.h"
 
 Pacman::Pacman()

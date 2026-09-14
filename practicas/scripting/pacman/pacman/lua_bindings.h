@@ -4,7 +4,7 @@
 
 struct lua_State;
 
-// Registra TODAS las funciones y clases expuestas a Lua.
+// Register ALL the functions and the exposed class to Lua.
 void registerBindings(lua_State* L);
 
 #endif

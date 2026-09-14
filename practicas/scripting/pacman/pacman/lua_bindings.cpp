@@ -1,11 +1,9 @@
 #include "lua_bindings.h"
 #include "lua.hpp"
 
-// Declaraciones extern de la librería del motor.
 #include "engine_api.h"
 
-// ------------------- Práctica 1: funciones sueltas -------------------
-
+// Exercise 1 external functions from Lua
 static int lua_setPacmanSpeedMultiplier(lua_State* L) {
     float s = (float)luaL_checknumber(L, 1);
     setPacmanSpeedMultiplier(s);
@@ -28,19 +26,16 @@ static int lua_setPowerUpTime(lua_State* L) {
     return 0;
 }
 
-// ------------------- Práctica 2: registro de la clase Pacman -------------------
+// Exercise 2 Pacman class from Lua
 
-// Viene de Pacman_Lua.cpp
 void registerPacmanClass(lua_State* L);
 
-// ------------------- Registro global -------------------
-
 void registerBindings(lua_State* L) {
-    // Práctica 1
+    // Exercise 1
     lua_register(L, "setPacmanSpeedMultiplier", lua_setPacmanSpeedMultiplier);
     lua_register(L, "setPacmanColor", lua_setPacmanColor);
     lua_register(L, "setPowerUpTime", lua_setPowerUpTime);
 
-    // Práctica 2
+    // Exercise 2
     registerPacmanClass(L);
 }

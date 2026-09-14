@@ -7,12 +7,12 @@
 #include "lua.hpp"
 #include "Pacman.h"
 
-
-// Constantes que siguen viviendo en C++ (puntuación, medallas)
 const int platas_para_oro = 5;
 const int bronces_para_plata = 100;
 
-// ---------- Helpers para acceder a la instancia Pacman de Lua ----------
+// ----------------------------------------------------------------------------
+
+// Getter of the Pacman instance from Lua.
 static Pacman* getPacman() {
 	lua_State* L = LuaManager::instance().getLuaState();
 	if (!L) return nullptr;
@@ -41,7 +41,7 @@ bool coinEatenCallback(int& score)
 
 	p->addCoin();
 
-	// Leemos coinPoints desde Lua directamente para no depender de ConfigManager
+	// We get the coinPoints from Lua
 	lua_State* L = LuaManager::instance().getLuaState();
 	lua_getglobal(L, "coinPoints");
 	int coinPoints = (int)lua_tointeger(L, -1);
@@ -57,16 +57,15 @@ bool frameCallback(float time)
 {
 	if (!configLoaded) {
 		if (!LuaManager::instance().init()) {
-			std::cout << "Error inicializando Lua" << std::endl;
+			std::cout << "Error initializing Lua" << std::endl;
 
 			return false;
 		}
 
 		if (!LuaManager::instance().loadConfig("config.lua")) {
-			std::cout << "Error cargando config.lua" << std::endl;
+			std::cout << "Error loading config.lua" << std::endl;
 		}
 		configLoaded = true;
-		// Después de cargar, aplicamos también lo que queramos del script
 	}
 	else
 	{
@@ -89,7 +88,7 @@ bool powerUpEatenCallback(int& score)
 	lua_State* L = LuaManager::instance().getLuaState();
 	if (!L) return false;
 
-	// Color según la vida (función Lua)
+	// Color based on the hp
 	lua_getglobal(L, "getPowerUpColor");
 	lua_pushnumber(L, p->getLives());
 	if (lua_pcall(L, 1, 1, 0) == 0 && lua_istable(L, -1)) {
@@ -103,7 +102,7 @@ bool powerUpEatenCallback(int& score)
 	}
 	lua_pop(L, 1);
 
-	// Multiplicador y duración del powerUp
+	// Multiplier and duration of the powerUp
 	lua_getglobal(L, "powerUpSpeedMultiplier");
 	float mult = (float)lua_tonumber(L, -1);
 	lua_pop(L, 1);
@@ -114,7 +113,7 @@ bool powerUpEatenCallback(int& score)
 	lua_pop(L, 1);
 	setPowerUpTime(dur);
 
-	// Puntos
+	// Points
 	lua_getglobal(L, "powerUpScore");
 	int powerScore = (int)lua_tointeger(L, -1);
 	lua_pop(L, 1);

@@ -6,12 +6,12 @@ class Pacman {
 public:
     Pacman();
 
-    // --- Setters que delegan en el motor (librería) ---
+    // Setters that use the engine library.
     void setSpeedMultiplier(float mult);
     void setColor(int r, int g, int b, int a = 255);
     void setPowerUpTime(int seconds);
 
-    // --- Estado propio del jugador (antes eran globales de main.cpp) ---
+    // State of the player
     void  setMaxLives(float l);
     float getMaxLives() const { return maxLives; }
 
@@ -23,7 +23,7 @@ public:
     void  setCoins(int c) { coins = c; }
     void  addCoin() { ++coins; }
 
-    void  reset(); // restaura lives = maxLives, coins = 0
+    void  reset();
 
 private:
     float lives;
